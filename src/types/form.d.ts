@@ -1,7 +1,10 @@
+import { UseFormRegisterReturn } from 'react-hook-form'
+
 export interface Button {
   name: string
   title: string
   children?: React.ReactNode
+  submit?: boolean
   success?: boolean
   fnClick: () => void
 }
@@ -11,17 +14,20 @@ export interface Input {
   title: string
   placeholder?: string
   required?: boolean
+  error?: string
 }
 
 export interface InputText extends Input {
-  value?: string
   maskCpf?: boolean
-  fnChange: (value: string) => void
+  register?: UseFormRegisterReturn<any>
+}
+
+export interface InputNumber extends Input {
+  register?: UseFormRegisterReturn<any>
 }
 
 export interface InputDate extends Input {
-  value?: string
-  fnChange: (value: string) => void
+  register?: UseFormRegisterReturn<any>
 }
 
 export type OptionValue = string | number
@@ -33,6 +39,5 @@ export type SelectOption = {
 
 export interface Select extends Input {
   options: SelectOption[]
-  value?: OptionValue
-  fnChange: (value: string) => void
+  register?: UseFormRegisterReturn<any>
 }
