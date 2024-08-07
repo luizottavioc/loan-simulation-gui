@@ -16,17 +16,15 @@ export default function LoanBodyTable({
       <table className="w-full">
         <thead>
           <tr className="w-full border-b-2 border-zinc-400/50">
-            <th className="p-1.5 text-left text-base font-bold">
-              SALDO DEVEDOR
-            </th>
-            <th className="p-1.5 text-left text-base font-bold">JUROS</th>
-            <th className="p-1.5 text-left text-base font-bold">
+            <th className="p-1.5 text-left text-sm font-bold">SALDO DEVEDOR</th>
+            <th className="p-1.5 text-left text-sm font-bold">JUROS</th>
+            <th className="p-1.5 text-left text-sm font-bold">
               SALDO DEVEDOR AJUSTADO
             </th>
-            <th className="p-1.5 text-left text-base font-bold">
+            <th className="p-1.5 text-left text-sm font-bold">
               VALOR DA PARCELA
             </th>
-            <th className="p-1.5 text-left text-base font-bold">VENCIMENTO</th>
+            <th className="p-1.5 text-left text-sm font-bold">VENCIMENTO</th>
           </tr>
         </thead>
         <tbody>
@@ -35,21 +33,21 @@ export default function LoanBodyTable({
               key={installment.dueDate.getTime()}
               className="w-full border-b border-zinc-400/50"
             >
-              <td className="p-2 py-3 text-base font-medium">
+              <td className="p-2 py-3 text-xs font-medium">
                 {getTextAsFormattedCurrency(String(installment.balanceDue))}
               </td>
-              <td className="p-2 py-3 text-base font-medium">
+              <td className="p-2 py-3 text-xs font-medium">
                 {getTextAsFormattedCurrency(String(installment.tax))}
               </td>
-              <td className="p-2 py-3 text-base font-medium">
+              <td className="p-2 py-3 text-xs font-medium">
                 {getTextAsFormattedCurrency(
                   String(installment.balanceDue + installment.tax),
                 )}
               </td>
-              <td className="p-2 py-3 text-base font-medium">
+              <td className="p-2 py-3 text-xs font-medium">
                 {getTextAsFormattedCurrency(String(installment.value))}
               </td>
-              <td className="p-2 py-3 text-base font-medium">
+              <td className="p-2 py-3 text-xs font-medium">
                 {installment.dueDate.toLocaleDateString()}
               </td>
             </tr>

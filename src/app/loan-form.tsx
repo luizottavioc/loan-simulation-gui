@@ -14,6 +14,8 @@ import InputDate from '@/components/form/input-date'
 import LargeButton from '@/components/buttons/large-button'
 import { useForm } from 'react-hook-form'
 import { calculateLoan } from '@/services/loan.service'
+import { ServiceException } from '@/utils/service-exception'
+import { useState } from 'react'
 
 const ufsList: SelectOption[] = ufs.map((uf) => ({
   label: `${uf.sigla} - ${uf.nome}`,
@@ -58,22 +60,50 @@ export default function LoanForm({
     resolver: yupResolver(loanFormSchema),
   })
 
-  const onSubmit = (data: yup.InferType<typeof loanFormSchema>) => {
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
+  const onSubmit = async (data: yup.InferType<typeof loanFormSchema>) => {
     try {
-      const loan = calculateLoan(data)
-      setLoan(loan)
+      setLoadingSubmit(true)
+
+      const loanMade = await calculateLoan(data)
+      setLoan(loanMade.loan)
+
+      setLoadingSubmit(false)
     } catch (error) {
-      console.error(error)
+      resolveSubmitError(error)
     }
+  }
+
+  const resolveSubmitError = (error: unknown) => {
+    setLoadingSubmit(false)
+
+    if (!error) return
+
+    error instanceof ServiceException
+      ? setSubmitError(error.message)
+      : setSubmitError('Erro inesperado ao simular emprestimo.')
   }
 
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 lg:min-w-[850px] lg:max-w-[50svw]">
       <PageSubTitle>Preencha o formulário abaixo para simular</PageSubTitle>
       <form
-        className="flex w-full flex-col items-center justify-center gap-2 rounded bg-zinc-50 p-4 py-8 shadow-md lg:p-6 lg:pt-12"
+        className="flex w-full flex-col items-center justify-center gap-2 rounded bg-zinc-50 p-4 py-8 shadow-md lg:p-6"
         onSubmit={handleSubmit(onSubmit)}
       >
+        {submitError && (
+          <div className="relative w-full animate-show-fade-in rounded bg-red-500/10 p-2 px-6 text-center text-xs font-bold text-red-600">
+            {submitError}
+            <button
+              className="absolute right-2 top-1/2 -translate-y-1/2"
+              onClick={() => setSubmitError(null)}
+            >
+              x
+            </button>
+          </div>
+        )}
         <InputText
           title="CPF"
           name="cpf"
@@ -115,9 +145,7 @@ export default function LoanForm({
             name="submit"
             title="Simular"
             submit
-            fnClick={() => {
-              console.log()
-            }}
+            disabled={loadingSubmit}
           >
             SIMULAR
           </LargeButton>

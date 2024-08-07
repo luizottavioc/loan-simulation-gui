@@ -6,7 +6,8 @@ export interface Button {
   children?: React.ReactNode
   submit?: boolean
   success?: boolean
-  fnClick: () => void
+  disabled?: boolean
+  fnClick?: () => void
 }
 
 export interface Input {
