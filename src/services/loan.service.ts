@@ -4,20 +4,25 @@ import { ServiceException } from '@/utils/service-exception'
 
 import { addMonths, parse } from 'date-fns'
 import { getTextAsFormattedCurrency } from './form.service'
-
-import taxes from '@/data/taxes.json'
+import { UF } from '@/types/uf'
 
 const MIN_LOAN_AMOUNT = 5000000
 const MIN_INSTALLMENT_PERCENT = 0.01
 
-export async function calculateLoan({
-  cpf,
-  uf,
-  dateBirth,
-  loanAmountValue,
-  loanInstallmentsValue,
-}: LoanFormInputs): Promise<LoanMade> {
-  const loan = await resolveLoan({ loanAmountValue, loanInstallmentsValue, uf })
+export function calculateLoan(
+  formData: LoanFormInputs,
+  ufsInterest: UF[],
+): LoanMade {
+  const { cpf, uf, dateBirth, loanAmountValue, loanInstallmentsValue } =
+    formData
+
+  const loan = resolveLoan({
+    loanAmountValue,
+    loanInstallmentsValue,
+    uf,
+    ufsInterest,
+  })
+
   const user = resolveUserLoan({ cpf, uf, dateBirth })
 
   return { user, loan }
@@ -46,18 +51,20 @@ export function resolveUserLoan({
   return { cpf, uf, dateBirth: birth }
 }
 
-export async function resolveLoan({
+export function resolveLoan({
   loanAmountValue,
   loanInstallmentsValue,
   uf,
+  ufsInterest,
 }: {
   loanAmountValue: number
   loanInstallmentsValue: number
   uf: number
-}): Promise<Loan> {
+  ufsInterest: UF[]
+}): Loan {
   checkLoanValues(loanAmountValue, loanInstallmentsValue)
 
-  const tax = await requestLoanTaxByUf(uf)
+  const tax = getLoanTaxByUf(uf, ufsInterest)
   if (!tax) {
     throw new ServiceException(
       'Não é possível realizar empréstimos no estado selecionado.',
@@ -71,6 +78,18 @@ export async function resolveLoan({
   })
 
   return loan
+}
+
+export function checkUfValues(uf: number, ufsInterest: UF[]): void {
+  if (!uf || uf < 0 || !ufsInterest) {
+    throw new ServiceException('Erro ao resolver dados do empréstimo.')
+  }
+
+  if (!ufsInterest.find((interest) => interest.id === uf)) {
+    throw new ServiceException(
+      'Não é possível realizar empréstimos no estado selecionado.',
+    )
+  }
 }
 
 export function checkLoanValues(
@@ -100,9 +119,19 @@ export function checkLoanValues(
   }
 }
 
-export async function requestLoanTaxByUf(uf: number): Promise<number | false> {
-  await new Promise((resolve) => setTimeout(resolve, 500))
-  return taxes.find((tax) => tax.idUf === uf)?.tax || false
+export function getLoanTaxByUf(uf: number, ufsInterest: UF[]): number {
+  if (!uf || uf < 0 || !ufsInterest) {
+    throw new ServiceException('Erro ao resolver dados do empréstimo.')
+  }
+
+  const tax = ufsInterest.find((interest) => interest.id === uf)?.interestRate
+  if (tax === undefined) {
+    throw new ServiceException(
+      'Não é possível realizar empréstimos no estado selecionado.',
+    )
+  }
+
+  return tax
 }
 
 export function getLoan({

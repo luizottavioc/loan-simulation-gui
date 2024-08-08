@@ -4,7 +4,6 @@ import { SelectOption } from '@/types/form'
 import { Loan } from '@/types/loan'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import ufs from '@/data/uf.json'
 
 import PageSubTitle from '@/components/typography/page-subtitle'
 import InputText from '@/components/form/input-text'
@@ -15,18 +14,24 @@ import LargeButton from '@/components/buttons/large-button'
 import { useForm } from 'react-hook-form'
 import { calculateLoan } from '@/services/loan.service'
 import { ServiceException } from '@/utils/service-exception'
-import { useState } from 'react'
-
-const ufsList: SelectOption[] = ufs.map((uf) => ({
-  label: `${uf.sigla} - ${uf.nome}`,
-  value: uf.id,
-}))
+import { useEffect, useState } from 'react'
+import { fetchUFsAsOptions } from '@/services/uf.service'
+import { UF } from '@/types/uf'
 
 export default function LoanForm({
   setLoan,
 }: {
   setLoan: (loan: Loan) => void
 }) {
+  const [ufsInterest, setUfsInterest] = useState<UF[]>([])
+  const [ufsListOptions, setUfsListOptions] = useState<SelectOption[]>([])
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+
+  useEffect(() => {
+    fetchUFsAsOptions(setUfsListOptions, setUfsInterest)
+  }, [])
+
   const loanFormSchema = yup.object().shape({
     cpf: yup.string().required('O campo "CPF" é obrigatório.'),
     uf: yup
@@ -60,14 +65,11 @@ export default function LoanForm({
     resolver: yupResolver(loanFormSchema),
   })
 
-  const [loadingSubmit, setLoadingSubmit] = useState(false)
-  const [submitError, setSubmitError] = useState<string | null>(null)
-
   const onSubmit = async (data: yup.InferType<typeof loanFormSchema>) => {
     try {
       setLoadingSubmit(true)
 
-      const loanMade = await calculateLoan(data)
+      const loanMade = await calculateLoan(data, ufsInterest)
       setLoan(loanMade.loan)
 
       setLoadingSubmit(false)
@@ -115,7 +117,7 @@ export default function LoanForm({
           name="uf"
           title="Estado"
           placeholder="UF"
-          options={ufsList}
+          options={ufsListOptions}
           register={register('uf')}
           error={errors.uf?.message}
         />
