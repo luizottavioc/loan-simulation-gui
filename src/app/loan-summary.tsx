@@ -12,10 +12,10 @@ export default function LoanSummary({ loan }: { loan: Loan | null }) {
       <PageSubTitle>
         Veja a simulação para o seu empréstimo antes de efetivar
       </PageSubTitle>
-      <div className="flex w-full flex-col items-center justify-center gap-4 rounded bg-zinc-50 p-4 py-8 shadow-md lg:gap-12 lg:p-6">
+      <div className="flex w-full flex-col items-center justify-center gap-8 rounded bg-zinc-50 p-4 py-8 shadow-md lg:gap-12 lg:p-6">
         {loan && (
           <>
-            <div className="flex w-full flex-col items-center justify-center gap-4 lg:grid lg:grid-cols-3 lg:gap-8">
+            <div className="flex w-full flex-col items-center justify-center gap-8 md:grid md:grid-cols-2 lg:grid lg:grid-cols-3">
               <LoanHeadData
                 label="VALOR REQUERIDO:"
                 value={getTextAsFormattedCurrency(String(loan.amount))}

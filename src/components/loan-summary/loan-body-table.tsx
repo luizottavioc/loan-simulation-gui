@@ -9,8 +9,8 @@ export default function LoanBodyTable({
   installments: Installment[]
 }) {
   return (
-    <div className="flex w-full flex-col items-center justify-start gap-8">
-      <h1 className="w-full text-xs font-bold text-zinc-500">
+    <div className="flex w-full flex-col gap-4 overflow-auto">
+      <h1 className="w-full text-center text-xs font-bold text-zinc-500 lg:text-left">
         PROJEÇÃO DAS PARCELAS:
       </h1>
       <table className="w-full">
