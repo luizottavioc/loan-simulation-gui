@@ -163,6 +163,12 @@ export function getLoan({
       interest,
     )
 
+    if (newInstallment.interest >= newInstallment.value) {
+      throw new ServiceException(
+        'O valor das parcelas é menor do que a incidência dos juros, portanto o emprestimo não pode ser realizado.',
+      )
+    }
+
     if (newInstallment.balanceDue <= 0) break
 
     installments.push(newInstallment)
