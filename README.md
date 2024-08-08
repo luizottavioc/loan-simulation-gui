@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Loan Simulation - Graphical User Interface (GUI)
 
-## Getting Started
+## Projeto
+Este projeto é uma interface desenvolvida em Next.js que faz parte do projeto maior "loan-simulation". Esta Web Application permite simular empréstimos para pessoas físicas, levando em consideração o estado do usuário e as taxas de juros específicas de cada região. O objetivo é proporcionar uma experiência amigável e eficiente para a simulação de empréstimos, oferecendo informações detalhadas e personalizadas para cada simulação realizada. O repositório da API pode ser acesso através do seguinte link: [loan-simulation-api](https://github.com/luizottavioc/loan-simulation-api)
 
-First, run the development server:
+## Tecnologias
+Este projeto foi construído utilizando as seguintes tecnologias:
+- **Next.js**;
+- **TypeScript**;
+- **Tailwind CSS**;
+- **Axios**;
+- **React Hook Form**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Estrutura de Pastas
+A estrutura do projeto é organizada da seguinte forma dentro da pasta `/src`:
+- **/app**: Contém as páginas da aplicação e é responsável por renderizar os componentes que compõem a interface do usuário. No caso deste projeto, uma única página.
+- **/components**: Pasta dedicada aos componentes reutilizáveis da aplicação. Esses componentes auxiliam na construção das páginas, permitindo a reutilização de elementos comuns das páginas.
+- **/services**: Contém a lógica de negócios da aplicação. Aqui estão os serviços desacoplados, como [loan.service](./src/services/loan.service.ts), [uf.service](./src/services/uf.service.ts), [http.service](./src/services/http.service.ts), entre outros. Esta separação permite a realização de testes unitários isolados, aumentando a confiabilidade do código.
+- **/types**: Centraliza as convenções da aplicação em TypeScript. Inclui interfaces e tipos utilizados em toda a aplicação, garantindo consistência e facilitando a manutenção do código.
+- **/utils**: Pasta para utilidades gerais da aplicação. Contém funções e helpers que serão amplamente utilizados em diferentes partes do projeto, proporcionando uma base sólida de operações comuns.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy Local
+Para rodar o projeto localmente, siga os passos abaixo:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Dependências
+- **Node.js**: v21.7.3
+- **npm**: v10.5.0
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Passos para Deploy Local
+1. **Clone o repositório**:
+    ```bash
+    git clone git@github.com:luizottavioc/loan-simulation-gui.git
+    ```
 
-## Learn More
+2. **Instale as dependências**:
+    Navegue até a pasta do projeto e execute o comando abaixo para instalar todas as dependências necessárias:
+    ```bash
+    npm install
+    ```
 
-To learn more about Next.js, take a look at the following resources:
+3. **Configure o ambiente**:
+    Copie o arquivo `.env.example` e renomeie-o para `.env.local`. Isso definirá as variáveis de ambiente necessárias para a aplicação:
+    ```bash
+    cp .env.example .env.local
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Inicie o servidor de desenvolvimento**:
+    Após configurar o ambiente, execute o comando abaixo para iniciar o servidor de desenvolvimento:
+    ```bash
+    npm run dev
+    ```
+    Isso iniciará o servidor local na porta padrão (geralmente `http://localhost:3000`), onde você poderá acessar e interagir com a aplicação.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
