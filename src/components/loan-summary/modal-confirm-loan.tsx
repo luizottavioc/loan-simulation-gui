@@ -26,7 +26,10 @@ export default function ModalConfirmLoan({
               name="submit-loan"
               title="Efetivar"
               success
-              fnClick={() => postLoan()}
+              fnClick={() => {
+                postLoan()
+                closeModal()
+              }}
             >
               EFETIVAR EMPRESTIMO
             </LargeButton>

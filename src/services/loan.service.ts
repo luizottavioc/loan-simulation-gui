@@ -1,10 +1,19 @@
-import { Installment, Loan, LoanFormInputs, LoanMade } from '@/types/loan'
+import {
+  Installment,
+  Loan,
+  LoanFormInputs,
+  LoanMade,
+  PostInstallmentContract,
+  PostLoanContract,
+  PostLoanResponse,
+} from '@/types/loan'
 import { UserLoan } from '@/types/user'
 import { ServiceException } from '@/utils/service-exception'
 
-import { addMonths, parse } from 'date-fns'
+import { addMonths, format } from 'date-fns'
 import { getTextAsFormattedCurrency } from './form.service'
 import { UF } from '@/types/uf'
+import http from './http.service'
 
 const MIN_LOAN_AMOUNT = 5000000
 const MIN_INSTALLMENT_PERCENT = 0.01
@@ -35,20 +44,17 @@ export function resolveUserLoan({
 }: {
   cpf: string
   uf: number
-  dateBirth: string
+  dateBirth: Date
 }): UserLoan {
   if (!cpf || !uf || !dateBirth) {
     throw new ServiceException('Erro ao resolver dados do usuário.')
   }
 
-  const birth = parse(dateBirth, 'dd/MM/yyyy', new Date())
-  if (!birth) {
-    throw new ServiceException(
-      'Erro ao resolver data de nascimento do usuário.',
-    )
+  if (dateBirth > new Date()) {
+    throw new ServiceException('Data de nascimento inválida.')
   }
 
-  return { cpf, uf, dateBirth: birth }
+  return { cpf, uf, dateBirth }
 }
 
 export function resolveLoan({
@@ -204,4 +210,58 @@ export function getInstallmentByLastInstallment(
     value: newInstallmentValue,
     dueDate,
   }
+}
+
+export async function postLoanMade(
+  loanMade: LoanMade,
+  resetFormData: () => void,
+): Promise<void> {
+  if (!loanMade) {
+    throw new ServiceException('Erro ao efetivar empréstimo.')
+  }
+
+  const endpointPostLoan = '/loan'
+  const body = treatLoanDataToPost(loanMade)
+  const response: PostLoanResponse[] | null = await http
+    .post(endpointPostLoan, body)
+    .then((response) => {
+      const { data } = response
+      if (!data) {
+        throw new ServiceException('Erro ao efetivar empréstimo.')
+      }
+
+      return data as PostLoanResponse[]
+    })
+    .catch(() => null)
+
+  if (response === null) {
+    throw new ServiceException(
+      'Erro ao efetivar empréstimo. Tente novamente mais tarde.',
+    )
+  }
+
+  resetFormData()
+}
+
+export function treatLoanDataToPost(loanMade: LoanMade): PostLoanContract {
+  const installments: PostInstallmentContract[] =
+    loanMade.loan.installments.map((installment) => ({
+      balanceDue: installment.balanceDue,
+      interest: installment.interest,
+      value: installment.value,
+      dueDate: format(installment.dueDate, 'yyyy-MM-dd'),
+    }))
+
+  const body: PostLoanContract = {
+    clientCPF: loanMade.user.cpf,
+    clientDateOfBirth: format(loanMade.user.dateBirth, 'yyyy-MM-dd'),
+    ufId: loanMade.user.uf,
+    amount: loanMade.loan.amount,
+    percentMonthInterest: loanMade.loan.percentMonthInterest,
+    wantToPayPerMonth: loanMade.loan.wantToPayPerMonth,
+    totalInterest: loanMade.loan.totalInterest,
+    installments,
+  }
+
+  return body
 }

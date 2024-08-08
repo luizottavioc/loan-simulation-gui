@@ -8,7 +8,13 @@ import LargeButton from '@/components/buttons/large-button'
 import ModalConfirmLoan from '@/components/loan-summary/modal-confirm-loan'
 import { useState } from 'react'
 
-export default function LoanSummary({ loan }: { loan: Loan | null }) {
+export default function LoanSummary({
+  loan,
+  postLoan,
+}: {
+  loan: Loan | null
+  postLoan: () => void
+}) {
   const [showModalConfirm, setShowModalConfirm] = useState(false)
 
   return (
@@ -75,7 +81,7 @@ export default function LoanSummary({ loan }: { loan: Loan | null }) {
       {loan && showModalConfirm && (
         <ModalConfirmLoan
           loan={loan}
-          postLoan={() => {}}
+          postLoan={() => postLoan()}
           closeModal={() => setShowModalConfirm(false)}
         />
       )}

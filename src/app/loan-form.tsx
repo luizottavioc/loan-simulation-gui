@@ -1,7 +1,7 @@
 'use client'
 
 import { SelectOption } from '@/types/form'
-import { Loan } from '@/types/loan'
+import { LoanMade } from '@/types/loan'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -19,13 +19,16 @@ import { fetchUFsAsOptions } from '@/services/uf.service'
 import { UF } from '@/types/uf'
 
 export default function LoanForm({
-  setLoan,
+  postLoanMessage,
+  setPostLoanMessage,
+  setLoanMade,
 }: {
-  setLoan: (loan: Loan) => void
+  postLoanMessage: string | null
+  setPostLoanMessage: (message: string | null) => void
+  setLoanMade: (loan: LoanMade) => void
 }) {
   const [ufsInterest, setUfsInterest] = useState<UF[]>([])
   const [ufsListOptions, setUfsListOptions] = useState<SelectOption[]>([])
-  const [loadingSubmit, setLoadingSubmit] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -40,7 +43,9 @@ export default function LoanForm({
       .required('O campo "UF" é obrigatório.')
       .positive()
       .integer(),
-    dateBirth: yup.string().required('A data de nascimento é obrigatória.'),
+    dateBirth: yup
+      .date()
+      .required('O campo "Data de nascimento" é obrigatório.'),
     loanAmountValue: yup
       .number()
       .typeError('O campo "Valor do emprestimo" deve possuir um valor válido')
@@ -67,20 +72,14 @@ export default function LoanForm({
 
   const onSubmit = async (data: yup.InferType<typeof loanFormSchema>) => {
     try {
-      setLoadingSubmit(true)
-
-      const loanMade = await calculateLoan(data, ufsInterest)
-      setLoan(loanMade.loan)
-
-      setLoadingSubmit(false)
+      const loanMade = calculateLoan(data, ufsInterest)
+      setLoanMade(loanMade)
     } catch (error) {
       resolveSubmitError(error)
     }
   }
 
   const resolveSubmitError = (error: unknown) => {
-    setLoadingSubmit(false)
-
     if (!error) return
 
     error instanceof ServiceException
@@ -91,6 +90,17 @@ export default function LoanForm({
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 lg:min-w-[850px] lg:max-w-[50svw]">
       <PageSubTitle>Preencha o formulário abaixo para simular</PageSubTitle>
+      {postLoanMessage && (
+        <div className="relative w-full animate-show-fade-in rounded bg-green-500/10 p-2 px-6 text-center text-xs font-bold text-green-600">
+          {postLoanMessage}
+          <button
+            className="absolute right-2 top-1/2 -translate-y-1/2"
+            onClick={() => setPostLoanMessage(null)}
+          >
+            x
+          </button>
+        </div>
+      )}
       <form
         className="flex w-full flex-col items-center justify-center gap-2 rounded bg-zinc-50 p-4 py-8 shadow-md lg:p-6"
         onSubmit={handleSubmit(onSubmit)}
@@ -143,12 +153,7 @@ export default function LoanForm({
           error={errors.loanInstallmentsValue?.message}
         />
         <div className="mt-3 w-full">
-          <LargeButton
-            name="submit"
-            title="Simular"
-            submit
-            disabled={loadingSubmit}
-          >
+          <LargeButton name="submit" title="Simular" submit>
             SIMULAR
           </LargeButton>
         </div>

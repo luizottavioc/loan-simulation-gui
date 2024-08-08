@@ -23,7 +23,38 @@ export type LoanMade = {
 export interface LoanFormInputs {
   cpf: string
   uf: number
-  dateBirth: string
+  dateBirth: Date
   loanAmountValue: number
   loanInstallmentsValue: number
+}
+
+export interface PostInstallmentContract {
+  balanceDue: number
+  interest: number
+  value: number
+  dueDate: string
+}
+
+export interface PostLoanContract {
+  clientCPF: string
+  clientDateOfBirth: string
+  ufId: number
+  amount: number
+  percentMonthInterest: number
+  wantToPayPerMonth: number
+  totalInterest: number
+  installments: PostInstallmentContract[]
+}
+
+export interface PostLoanResponse {
+  id: number
+  clientCPF: string
+  clientDateOfBirth: string
+  ufId: number
+  amount: number
+  percentMonthInterest: number
+  wantToPayPerMonth: number
+  totalInterest: number
+  updatedAt: string
+  createdAt: string
 }

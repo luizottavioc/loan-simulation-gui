@@ -1,20 +1,37 @@
 'use client'
 
 import { useState } from 'react'
-import { Loan } from '@/types/loan'
+import { LoanMade } from '@/types/loan'
 
 import LoanTitle from './loan-title'
 import LoanForm from './loan-form'
 import LoanSummary from './loan-summary'
+import { postLoanMade } from '@/services/loan.service'
 
 export default function Home() {
-  const [loan, setLoan] = useState<Loan | null>(null)
+  const [loanMade, setLoanMade] = useState<LoanMade | null>(null)
+  const [postLoanMessage, setPostLoanMessage] = useState<string | null>()
+
+  const resetForm = () => {
+    setLoanMade(null)
+  }
+
+  const postLoan = () => {
+    if (!loanMade) return
+
+    postLoanMade(loanMade, resetForm)
+    setPostLoanMessage('Emprestimo efetuado com sucesso!')
+  }
 
   return (
     <main className="flex h-svh w-svw flex-col items-center justify-start gap-16 p-4">
       <LoanTitle />
-      <LoanForm setLoan={setLoan} />
-      <LoanSummary loan={loan} />
+      <LoanForm
+        postLoanMessage={postLoanMessage || null}
+        setPostLoanMessage={setPostLoanMessage}
+        setLoanMade={setLoanMade}
+      />
+      <LoanSummary loan={loanMade?.loan || null} postLoan={postLoan} />
     </main>
   )
 }
