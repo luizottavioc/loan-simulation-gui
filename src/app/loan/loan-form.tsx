@@ -31,10 +31,12 @@ export default function LoanForm({
   const [ufsInterest, setUfsInterest] = useState<UF[]>([])
   const [ufsListOptions, setUfsListOptions] = useState<SelectOption[]>([])
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [apiError, setApiError] = useState<string | null>(null)
 
   useEffect(() => {
-    fetchUFsAsOptions(setUfsListOptions, setUfsInterest)
-  }, [])
+    if (ufsListOptions.length > 0) return
+    fetchUFsAsOptions(setUfsListOptions, setUfsInterest, setApiError)
+  }, [ufsListOptions])
 
   const loanFormSchema = yup.object().shape({
     cpf: yup
@@ -83,7 +85,9 @@ export default function LoanForm({
         ),
       }
       const loanMade = calculateLoan(dataWithTreatedMasks, ufsInterest)
+
       setLoanMade(loanMade)
+      setSubmitError(null)
     } catch (error) {
       resolveSubmitError(error)
     }
@@ -106,6 +110,17 @@ export default function LoanForm({
           <button
             className="absolute right-2 top-1/2 -translate-y-1/2"
             onClick={() => setPostLoanMessage(null)}
+          >
+            x
+          </button>
+        </div>
+      )}
+      {apiError && (
+        <div className="relative w-full animate-show-fade-in rounded bg-zinc-500/10 p-2 px-6 text-center text-xs font-bold">
+          {apiError}
+          <button
+            className="absolute right-2 top-1/2 -translate-y-1/2"
+            onClick={() => setApiError(null)}
           >
             x
           </button>

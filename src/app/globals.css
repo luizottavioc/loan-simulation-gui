@@ -4,7 +4,7 @@
 
 @layer components {
   * {
-    font-family: "Inter Tight", sans-serif;
+    font-family: var(--font-open-sans), system-ui, sans-serif;
     scrollbar-width: thin;
   }
 

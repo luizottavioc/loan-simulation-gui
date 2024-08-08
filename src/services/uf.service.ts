@@ -18,6 +18,7 @@ export async function requestUFsInfo(): Promise<UF[]> {
     .catch(() => null)
 
   if (response === null) {
+    console.log('Erro ao buscar UFs disponíveis. Tente novamente mais tarde.')
     throw new ServiceException(
       'Erro ao buscar UFs disponíveis. Tente novamente mais tarde.',
     )
@@ -29,10 +30,15 @@ export async function requestUFsInfo(): Promise<UF[]> {
 export async function fetchUFsAsOptions(
   setUfsListOptions: (ufs: SelectOption[]) => void,
   setUfsInterest: (ufs: UF[]) => void,
+  setApiError: (error: string | null) => void,
 ) {
-  const ufs = await requestUFsInfo()
-  const ufsAsOptions = ufs.map((uf) => ({ label: uf.name, value: uf.id }))
+  try {
+    const ufs = await requestUFsInfo()
+    const ufsAsOptions = ufs.map((uf) => ({ label: uf.name, value: uf.id }))
 
-  setUfsListOptions(ufsAsOptions)
-  setUfsInterest(ufs)
+    setUfsListOptions(ufsAsOptions)
+    setUfsInterest(ufs)
+  } catch (error) {
+    setApiError('Serviço indisponível. Tente novamente mais tarde!')
+  }
 }

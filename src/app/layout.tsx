@@ -9,8 +9,9 @@ const openSans = Open_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'Empréstimo Simplificado',
-  description: 'Simule o seu empréstimo.',
+  title: 'Solicite o seu Empréstimo',
+  description:
+    'Simule o seu empréstimo levando em consideração seu estado e as taxas de juros específicas da sua região.',
 }
 
 export default function RootLayout({

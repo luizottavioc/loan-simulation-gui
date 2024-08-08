@@ -20,7 +20,12 @@ export function getTextAsFormattedCurrency(originalValue: string): string {
   if (!originalValue) return originalValue
 
   const onlyNumbers = getTextOnlyNumbers(originalValue)
-  if (!onlyNumbers.length || Number(onlyNumbers) === 0) return ''
+  if (
+    !onlyNumbers.length ||
+    onlyNumbers === '00' ||
+    (onlyNumbers !== '000' && onlyNumbers !== '00' && Number(onlyNumbers) === 0)
+  )
+    return ''
 
   const numericValue = parseFloat(onlyNumbers.replace(/\D/g, '')) / 100
   const formattedValue = new Intl.NumberFormat('pt-BR', {

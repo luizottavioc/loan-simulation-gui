@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { LoanMade } from '@/types/loan'
 
-import LoanTitle from './loan-title'
-import LoanForm from './loan-form'
-import LoanSummary from './loan-summary'
+import LoanTitle from './loan/loan-title'
+import LoanForm from './loan/loan-form'
+import LoanSummary from './loan/loan-summary'
 import { postLoanMade } from '@/services/loan.service'
 
 export default function Home() {

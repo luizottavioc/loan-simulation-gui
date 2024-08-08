@@ -3,5 +3,5 @@ export default function PageSubTitle({
 }: {
   children: React.ReactNode
 }) {
-  return <h3 className="p-2 font-sans text-base font-bold">{children}</h3>
+  return <h3 className="p-2 text-base font-bold">{children}</h3>
 }
