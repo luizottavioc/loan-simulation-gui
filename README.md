@@ -1,7 +1,7 @@
 # Loan Simulation - Graphical User Interface (GUI)
 
 ## Projeto
-Este projeto é uma interface desenvolvida em Next.js que faz parte do projeto maior "loan-simulation". Esta Web Application permite simular empréstimos para pessoas físicas, levando em consideração o estado do usuário e as taxas de juros específicas de cada região. O objetivo é proporcionar uma experiência amigável e eficiente para a simulação de empréstimos, oferecendo informações detalhadas e personalizadas para cada simulação realizada. O repositório da API pode ser acesso através do seguinte link: [loan-simulation-api](https://github.com/luizottavioc/loan-simulation-api)
+Este projeto consiste na interface front-end desenvolvida em Next.js que faz parte do projeto "loan-simulation". Esta Web Application permite simular empréstimos para pessoas físicas, levando em consideração o estado do usuário e as taxas de juros específicas de cada região. O objetivo é proporcionar uma experiência amigável e eficiente para a simulação de empréstimos, oferecendo informações detalhadas e personalizadas para cada simulação realizada. O repositório da API pode ser acessado através do seguinte link: [loan-simulation-api](https://github.com/luizottavioc/loan-simulation-api)
 
 ## Tecnologias
 Este projeto foi construído utilizando as seguintes tecnologias:
