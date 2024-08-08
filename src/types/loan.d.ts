@@ -2,17 +2,17 @@ import { UserLoan } from './user'
 
 export type Installment = {
   balanceDue: number
-  tax: number
+  interest: number
   value: number
   dueDate: Date
 }
 
 export type Loan = {
   amount: number
-  percentMonthTax: number
+  percentMonthInterest: number
   wantToPayPerMonth: number
   installments: Installment[]
-  totalTax: number
+  totalInterest: number
 }
 
 export type LoanMade = {

@@ -4,7 +4,7 @@ import http from './http.service'
 import { ServiceException } from '@/utils/service-exception'
 
 export async function requestUFsInfo(): Promise<UF[]> {
-  const endpointAllUFs = '/ufs'
+  const endpointAllUFs = '/uf'
   const response: UF[] | null = await http
     .get(endpointAllUFs)
     .then((response) => {

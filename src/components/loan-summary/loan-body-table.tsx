@@ -37,11 +37,11 @@ export default function LoanBodyTable({
                 {getTextAsFormattedCurrency(String(installment.balanceDue))}
               </td>
               <td className="p-2 py-3 text-xs font-medium">
-                {getTextAsFormattedCurrency(String(installment.tax))}
+                {getTextAsFormattedCurrency(String(installment.interest))}
               </td>
               <td className="p-2 py-3 text-xs font-medium">
                 {getTextAsFormattedCurrency(
-                  String(installment.balanceDue + installment.tax),
+                  String(installment.balanceDue + installment.interest),
                 )}
               </td>
               <td className="p-2 py-3 text-xs font-medium">

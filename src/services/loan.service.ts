@@ -64,8 +64,8 @@ export function resolveLoan({
 }): Loan {
   checkLoanValues(loanAmountValue, loanInstallmentsValue)
 
-  const tax = getLoanTaxByUf(uf, ufsInterest)
-  if (!tax) {
+  const interest = getLoanInterestByUf(uf, ufsInterest)
+  if (!interest) {
     throw new ServiceException(
       'Não é possível realizar empréstimos no estado selecionado.',
     )
@@ -74,7 +74,7 @@ export function resolveLoan({
   const loan = getLoan({
     loanAmountValue,
     loanInstallmentsValue,
-    tax,
+    interest,
   })
 
   return loan
@@ -119,29 +119,31 @@ export function checkLoanValues(
   }
 }
 
-export function getLoanTaxByUf(uf: number, ufsInterest: UF[]): number {
+export function getLoanInterestByUf(uf: number, ufsInterest: UF[]): number {
   if (!uf || uf < 0 || !ufsInterest) {
     throw new ServiceException('Erro ao resolver dados do empréstimo.')
   }
 
-  const tax = ufsInterest.find((interest) => interest.id === uf)?.interestRate
-  if (tax === undefined) {
+  const interest = ufsInterest.find(
+    (interest) => interest.id === uf,
+  )?.interestRate
+  if (interest === undefined) {
     throw new ServiceException(
       'Não é possível realizar empréstimos no estado selecionado.',
     )
   }
 
-  return tax
+  return interest
 }
 
 export function getLoan({
   loanAmountValue,
   loanInstallmentsValue,
-  tax,
+  interest,
 }: {
   loanAmountValue: number
   loanInstallmentsValue: number
-  tax: number
+  interest: number
 }): Loan {
   const installments: Installment[] = []
 
@@ -152,7 +154,7 @@ export function getLoan({
       lastInstallment,
       loanAmountValue,
       loanInstallmentsValue,
-      tax,
+      interest,
     )
 
     if (newInstallment.balanceDue <= 0) break
@@ -160,17 +162,17 @@ export function getLoan({
     installments.push(newInstallment)
   } while (installments[installments.length - 1]?.balanceDue > 0)
 
-  const totalTax = installments.reduce(
-    (total: number, installment: Installment) => total + installment.tax,
+  const totalInterest = installments.reduce(
+    (total: number, installment: Installment) => total + installment.interest,
     0,
   )
 
   return {
     amount: loanAmountValue,
-    percentMonthTax: tax,
+    percentMonthInterest: interest,
     wantToPayPerMonth: loanInstallmentsValue,
     installments,
-    totalTax,
+    totalInterest,
   }
 }
 
@@ -178,14 +180,14 @@ export function getInstallmentByLastInstallment(
   lastInstallment: Installment,
   loanAmountValue: number,
   loanInstallmentsValue: number,
-  tax: number,
+  interest: number,
 ): Installment {
   const lastBalanceDue =
-    lastInstallment.balanceDue + lastInstallment.tax || loanAmountValue
+    lastInstallment.balanceDue + lastInstallment.interest || loanAmountValue
   const newBalanceDue = lastBalanceDue - (lastInstallment.value || 0)
 
-  const taxValue = Math.floor(newBalanceDue * tax)
-  const valueToPayOff = newBalanceDue + taxValue
+  const interestValue = Math.floor(newBalanceDue * interest)
+  const valueToPayOff = newBalanceDue + interestValue
 
   const newInstallmentValue =
     valueToPayOff > loanInstallmentsValue
@@ -198,7 +200,7 @@ export function getInstallmentByLastInstallment(
 
   return {
     balanceDue: newBalanceDue,
-    tax: taxValue,
+    interest: interestValue,
     value: newInstallmentValue,
     dueDate,
   }
