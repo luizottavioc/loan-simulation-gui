@@ -11,6 +11,10 @@ import InputCurrency from '@/components/form/input-currency'
 import Select from '@/components/form/select'
 import InputDate from '@/components/form/input-date'
 import LargeButton from '@/components/buttons/large-button'
+import MsgPostLoanSuccess from '@/components/loan-form/msg-post-loan-success'
+import MsgApiError from '@/components/loan-form/msg-api-error'
+import MsgSubmitError from '@/components/loan-form/msg-submit-error'
+
 import { FormProvider, useForm } from 'react-hook-form'
 import { calculateLoan } from '@/services/loan.service'
 import { ServiceException } from '@/utils/service-exception'
@@ -20,12 +24,12 @@ import { UF } from '@/types/uf'
 import { getTextOnlyNumbers } from '@/services/form.service'
 
 export default function LoanForm({
-  postLoanMessage,
-  setPostLoanMessage,
+  postLoanSuccess,
+  setPostLoanSuccess,
   setLoanMade,
 }: {
-  postLoanMessage: string | null
-  setPostLoanMessage: (message: string | null) => void
+  postLoanSuccess: string | null
+  setPostLoanSuccess: (message: string | null) => void
   setLoanMade: (loan: LoanMade) => void
 }) {
   const [ufsInterest, setUfsInterest] = useState<UF[]>([])
@@ -104,43 +108,23 @@ export default function LoanForm({
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 lg:min-w-[850px] lg:max-w-[50svw]">
       <PageSubTitle>Preencha o formulário abaixo para simular</PageSubTitle>
-      {postLoanMessage && (
-        <div className="relative w-full animate-show-fade-in rounded bg-green-500/10 p-2 px-6 text-center text-xs font-bold text-green-600">
-          {postLoanMessage}
-          <button
-            className="absolute right-2 top-1/2 -translate-y-1/2"
-            onClick={() => setPostLoanMessage(null)}
-          >
-            x
-          </button>
-        </div>
+      {postLoanSuccess && (
+        <MsgPostLoanSuccess
+          message={postLoanSuccess}
+          setPostLoanSuccess={setPostLoanSuccess}
+        />
       )}
-      {apiError && (
-        <div className="relative w-full animate-show-fade-in rounded bg-zinc-500/10 p-2 px-6 text-center text-xs font-bold">
-          {apiError}
-          <button
-            className="absolute right-2 top-1/2 -translate-y-1/2"
-            onClick={() => setApiError(null)}
-          >
-            x
-          </button>
-        </div>
-      )}
+      {apiError && <MsgApiError message={apiError} setApiError={setApiError} />}
       <FormProvider {...methods}>
         <form
           className="flex w-full flex-col items-center justify-center gap-2 rounded bg-zinc-50 p-4 py-8 shadow-md lg:p-6"
           onSubmit={handleSubmit(onSubmit)}
         >
           {submitError && (
-            <div className="relative w-full animate-show-fade-in rounded bg-red-500/10 p-2 px-6 text-center text-xs font-bold text-red-600">
-              {submitError}
-              <button
-                className="absolute right-2 top-1/2 -translate-y-1/2"
-                onClick={() => setSubmitError(null)}
-              >
-                x
-              </button>
-            </div>
+            <MsgSubmitError
+              message={submitError}
+              setSubmitError={setSubmitError}
+            />
           )}
           <InputText
             title="CPF"
@@ -179,7 +163,7 @@ export default function LoanForm({
             register={register('loanInstallmentsValue')}
             error={errors.loanInstallmentsValue?.message}
           />
-          <div className="mt-3 w-full">
+          <div className="mt-3 flex w-full flex-col items-center justify-center gap-2">
             <LargeButton name="submit" title="Simular" submit>
               SIMULAR
             </LargeButton>

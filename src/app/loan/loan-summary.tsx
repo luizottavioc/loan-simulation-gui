@@ -11,9 +11,13 @@ import { useState } from 'react'
 export default function LoanSummary({
   loan,
   postLoan,
+  postLoanError,
+  setPostLoanError,
 }: {
   loan: Loan | null
-  postLoan: () => void
+  postLoan: () => Promise<boolean>
+  postLoanError: string | null
+  setPostLoanError: (message: string | null) => void
 }) {
   const [showModalConfirm, setShowModalConfirm] = useState(false)
 
@@ -81,8 +85,10 @@ export default function LoanSummary({
       {loan && showModalConfirm && (
         <ModalConfirmLoan
           loan={loan}
-          postLoan={() => postLoan()}
+          postLoan={postLoan}
           closeModal={() => setShowModalConfirm(false)}
+          postLoanError={postLoanError}
+          setPostLoanError={setPostLoanError}
         />
       )}
     </>
