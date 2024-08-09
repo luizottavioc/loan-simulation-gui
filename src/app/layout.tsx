@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+// eslint-disable-next-line
 import { Open_Sans } from 'next/font/google'
 import './globals.css'
 
