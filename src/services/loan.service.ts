@@ -260,7 +260,7 @@ export function treatLoanDataToPost(loanMade: LoanMade): PostLoanContract {
 
   const body: PostLoanContract = {
     clientCPF: loanMade.user.cpf,
-    clientDateOfBirth: format(loanMade.user.dateBirth, 'yyyy-MM-dd'),
+    clientDateOfBirth: loanMade.user.dateBirth.toISOString(),
     ufId: loanMade.user.uf,
     amount: loanMade.loan.amount,
     percentMonthInterest: loanMade.loan.percentMonthInterest,

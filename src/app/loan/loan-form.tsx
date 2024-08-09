@@ -10,10 +10,11 @@ import InputText from '@/components/form/input-text'
 import InputCurrency from '@/components/form/input-currency'
 import Select from '@/components/form/select'
 import InputDate from '@/components/form/input-date'
-import LargeButton from '@/components/buttons/large-button'
+import LoadingUfs from '@/components/loan-form/loading-ufs'
 import MsgPostLoanSuccess from '@/components/loan-form/msg-post-loan-success'
 import MsgApiError from '@/components/loan-form/msg-api-error'
 import MsgSubmitError from '@/components/loan-form/msg-submit-error'
+import LargeButton from '@/components/buttons/large-button'
 
 import { FormProvider, useForm } from 'react-hook-form'
 import { calculateLoan } from '@/services/loan.service'
@@ -34,12 +35,18 @@ export default function LoanForm({
 }) {
   const [ufsInterest, setUfsInterest] = useState<UF[]>([])
   const [ufsListOptions, setUfsListOptions] = useState<SelectOption[]>([])
+  const [loadingUfs, setLoadingUfs] = useState<boolean>(true)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [apiError, setApiError] = useState<string | null>(null)
 
   useEffect(() => {
     if (ufsListOptions.length > 0) return
-    fetchUFsAsOptions(setUfsListOptions, setUfsInterest, setApiError)
+    fetchUFsAsOptions(
+      setUfsListOptions,
+      setUfsInterest,
+      setApiError,
+      setLoadingUfs,
+    )
   }, [ufsListOptions])
 
   const loanFormSchema = yup.object().shape({
@@ -108,6 +115,7 @@ export default function LoanForm({
   return (
     <div className="flex w-full flex-col items-center justify-center gap-4 lg:min-w-[850px] lg:max-w-[50svw]">
       <PageSubTitle>Preencha o formulário abaixo para simular</PageSubTitle>
+      {loadingUfs && <LoadingUfs />}
       {postLoanSuccess && (
         <MsgPostLoanSuccess
           message={postLoanSuccess}
@@ -117,7 +125,7 @@ export default function LoanForm({
       {apiError && <MsgApiError message={apiError} setApiError={setApiError} />}
       <FormProvider {...methods}>
         <form
-          className="flex w-full flex-col items-center justify-center gap-2 rounded bg-zinc-50 p-4 py-8 shadow-md lg:p-6"
+          className={`${loadingUfs && 'pointer-events-none opacity-50'} ${'flex w-full flex-col items-center justify-center gap-2 rounded bg-zinc-50 p-4 py-8 shadow-md lg:p-6'}`}
           onSubmit={handleSubmit(onSubmit)}
         >
           {submitError && (

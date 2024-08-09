@@ -9,7 +9,8 @@ Este projeto foi construído utilizando as seguintes tecnologias:
 - **TypeScript**;
 - **Tailwind CSS**;
 - **Axios**;
-- **React Hook Form**.
+- **React Hook Form**;
+- **Vitest**.
 
 ## Estrutura de Pastas
 A estrutura do projeto é organizada da seguinte forma dentro da pasta `/src`:
@@ -18,6 +19,7 @@ A estrutura do projeto é organizada da seguinte forma dentro da pasta `/src`:
 - **/services**: Contém a lógica de negócios da aplicação. Aqui estão os serviços desacoplados, como [loan.service](./src/services/loan.service.ts), [uf.service](./src/services/uf.service.ts), [http.service](./src/services/http.service.ts), entre outros. Esta separação permite a realização de testes unitários isolados, aumentando a confiabilidade do código.
 - **/types**: Centraliza as convenções da aplicação em TypeScript. Inclui interfaces e tipos utilizados em toda a aplicação, garantindo consistência e facilitando a manutenção do código.
 - **/utils**: Pasta para utilidades gerais da aplicação. Contém funções e helpers que serão amplamente utilizados em diferentes partes do projeto, proporcionando uma base sólida de operações comuns.
+- **/tests**: Pasta dedicada aos testes da aplicação. Aqui são armazenados os testes unitários e de integração que garantem a qualidade e a funcionalidade do código. Esta organização facilita a manutenção e a execução dos testes, permitindo verificar se os serviços, componentes e outras partes do código estão funcionando corretamente de forma isolada e integrada.
 
 ## Deploy Local
 Para rodar o projeto localmente, siga os passos abaixo:
@@ -51,3 +53,12 @@ Para rodar o projeto localmente, siga os passos abaixo:
     ```
     Isso iniciará o servidor local na porta padrão (geralmente `http://localhost:3000`), onde você poderá acessar e interagir com a aplicação.
 
+5. **Testes automatizados**:
+    Para conferir se todos os testes estão respondendo conforme o esperado, execute o comando abaixo para rodar os testes da aplicação:  
+    ```bash 
+    npm run test
+    ```  
+    Para verificar a cobertura de testes da aplicação: 
+    ```bash 
+    npm run coverage
+    ```  

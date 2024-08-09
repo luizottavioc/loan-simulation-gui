@@ -31,6 +31,7 @@ export async function fetchUFsAsOptions(
   setUfsListOptions: (ufs: SelectOption[]) => void,
   setUfsInterest: (ufs: UF[]) => void,
   setApiError: (error: string | null) => void,
+  setLoading: (loading: boolean) => void,
 ) {
   try {
     const ufs = await requestUFsInfo()
@@ -41,4 +42,6 @@ export async function fetchUFsAsOptions(
   } catch (error) {
     setApiError('Serviço indisponível. Tente novamente mais tarde!')
   }
+
+  setLoading(false)
 }
